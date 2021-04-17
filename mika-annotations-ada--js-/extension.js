@@ -4,7 +4,6 @@ const glob = require('glob');
 const cp = require('child_process');
 const separator = "\\";
 const NewMikaFolder = "SecretMikaFolder";
-const MikaMessage = "Enter in some values in the comment e.g 'X=7 and Y=10' and let Mika generate test input to reach these values if ones exist";
 const MikaProcedure = "\nprocedure SecretMikaCall(ID : in Integer; E : in Boolean) is\nbegin\n\tnull;\nend SecretMikaCall;\n";
 const MikaComment = "--#MIKA 'enter the conditions you would like to be met here'";
 const PackageBody = "package body";
@@ -14,7 +13,6 @@ const secret_mika_function_call = "SecretMikaCall({args});\n";
 const LINES = "----------------------------------------------------------\n";
 const TEST_NUMBER_STRING = "TEST NUMBER ";
 const CONSTRUCTED_TEST_INPUT = "CONSTRUCTED TEST INPUT \n";
-const CONSTRUCTED_LINE_STRING = "For condition on line number ";
 const MIKAHEADER = `----------------------------------------------------------
 --              MIKA TEST INPUTS GENERATOR              --
 -- Copyright Midoan Software Engineering Solutions Ltd. --
@@ -65,7 +63,6 @@ function get_mika_comment(code) {
 function activate(context) {
 	var editor = vscode.window.activeTextEditor;
 	let disposable = vscode.commands.registerCommand('mika-annotations-ada--js-.genTestInput', function () {
-		vscode.window.showInformationMessage(MikaMessage);
 		var [name, mikaFolder] = copy_current_dir();
 		var nameMinusExt = name.substring(0,name.length-4);
 		var lines = editor.document.getText().split(NewLine);
@@ -121,15 +118,12 @@ function activate(context) {
 					e.edit(edit => {
 						let outer_keys = Object.keys(json);
 						let offset = 6;
-						let mikaOffset = 5;
 						edit.insert(new vscode.Position(0, 0), MIKAHEADER);
 						for(let i=0;i<outer_keys.length;i++)
 						{
 							edit.insert(new vscode.Position(i+(offset++), 0), LINES);
 							let test_string_with_number = TEST_NUMBER_STRING + (i+1) + "\n";
 							edit.insert(new vscode.Position(i+(offset++), 0), test_string_with_number);
-							let constructed_line_with_number = CONSTRUCTED_LINE_STRING + (Number(outer_keys[i])-(mikaOffset++)) + "\n";
-							edit.insert(new vscode.Position(i+(offset++), 0),constructed_line_with_number);
 							edit.insert(new vscode.Position(i+(offset++), 0), CONSTRUCTED_TEST_INPUT);
 							Object.keys(json[outer_keys[i]]).forEach(function(key){
 								edit.insert(new vscode.Position(i+(offset++), 0),`${key} = ${json[outer_keys[i]][key]}\n`);
@@ -141,8 +135,9 @@ function activate(context) {
 					});
 				}, (error) => {
 					console.error(error);
-					debugger;
+					return;
 				});
+			fs.rmdirSync(mikaFolder, {recursive:true});
 		} 
 		else {
 			vscode.window.showErrorMessage("Mika or GNAT paths are invalid.");

@@ -2,7 +2,7 @@
 	"name": "mika-annotations-ada--js-",
 	"displayName": "Mika Annotations Ada (js)",
 	"description": "Annotates Ada code for test generation",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"engines": {
 		"vscode": "^1.53.0"
 	},
@@ -21,12 +21,12 @@
 				"mika-annotations-ada--js-.mikaPath": {
 					"type": "string",
 					"default": "%appdata%\\Roaming\\Midoan\\Mika\\bin",
-					"discription": "Enter in your the path to your mike bin folder"
+					"description": "Enter in your the path to your mike bin folder"
 				},
 				"mika-annotations-ada--js-.gnatPath": {
 					"type": "string",
 					"default": "C:\\GNAT\\2010\\bin",
-					"discription": "Enter in your the path to your GNAT instalation"
+					"description": "Enter in your the path to your GNAT installation"
 				}
 			}
 		},
