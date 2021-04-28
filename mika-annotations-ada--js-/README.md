@@ -6,8 +6,6 @@ This extension allows you to insert comments into your Ada code and generate tes
 
 ![TestExample](testsExample.png)
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
 ## Requirements
 
 This extension requires 

@@ -1,5 +1,20 @@
 # Mika Visual Studio Code Extension
 
+## Requirements
+
+This extension requires 
+1. [Mika](https://github.com/echancrure/Mika): Open Source Test Input Generation software
+2. [GNAT 2010](https://www.adacore.com/download): GNAT is a free-software compiler for the Ada programming language
+3. [Sicstus Prolog](https://sicstus.sics.se/download4.html): The necessary version of prolog to be Mika compatible
+
+## Demonstration
+
+A video demonstration can be found here:
+[Video Demonstration](https://youtu.be/tXC2NYavy9w)
+
+more complex boolean conditions are possible than are shown in the demonstration such as using 'and' and 'or' in your conditions also
+e.g Z = 185 and Y = 37
+
 ## How to use
 
 1. Download the repository and open the root folder in Visual Studio Code.

@@ -15,7 +15,7 @@ const TEST_NUMBER_STRING = "TEST NUMBER ";
 const CONSTRUCTED_TEST_INPUT = "CONSTRUCTED TEST INPUT \n";
 const MIKAHEADER = `----------------------------------------------------------
 --              MIKA TEST INPUTS GENERATOR              --
--- Copyright Midoan Software Engineering Solutions Ltd. --
+-- 			https://github.com/echancrure/Mika          --
 --                http://www.midoan.com/                --\n`;
 
 
@@ -49,7 +49,7 @@ function get_mika_comment(code) {
 	var subProgram;
 	for(let i = 0; i < code.length; i++){
 		let line = code[i].trim();
-		if(line.toLowerCase().startsWith("procedure ")){
+		if(line.toLowerCase().startsWith("procedure ") || line.toLowerCase().startsWith("function ")){
 			subProgram = line.slice(line.indexOf(' '), line.indexOf('(')).trim();
 		}
 		if(line.toLowerCase().startsWith("--#mika")) {
@@ -76,7 +76,7 @@ function activate(context) {
 		}
 
 		var path = mikaFolder + separator + name;
-		var textOfCopy = fs.readFileSync(path).toString().split('\n');
+		var textOfCopy = fs.readFileSync(path).toString().split(NewLine);
 		var textOffset = 0;
 		const insert_at_position = (arr,pos,element) => {
 			if(pos == 0){
@@ -103,12 +103,13 @@ function activate(context) {
 			];
 			cp.spawnSync(commands.join(' & '),{shell:true});
 			try{
-				var jsonFile = glob.sync(`${mikaFolder}${separator}${nameMinusExt}_mika${separator}${nameMinusExt}_*${separator}${nameMinusExt}.json`)[0];
+				var jsonFile = glob.sync(`${mikaFolder}${separator}${nameMinusExt}_mika${separator}${subProgram.toLowerCase()}_*${separator}${nameMinusExt}.json`)[0];
 				if (jsonFile === undefined)
 					throw "Error";
 			}
 			catch(e) {
 				vscode.window.showErrorMessage("Mika failed to generate test inputs");
+				fs.rmdirSync(mikaFolder, {recursive:true});
 				return;
 			}
 			var text = fs.readFileSync(jsonFile);
@@ -118,6 +119,15 @@ function activate(context) {
 					e.edit(edit => {
 						let outer_keys = Object.keys(json);
 						let offset = 6;
+						if (outer_keys.length === 0)
+						{
+							edit.insert(new vscode.Position(0, 0), MIKAHEADER);
+							edit.insert(new vscode.Position((offset++), 0), LINES);
+							edit.insert(new vscode.Position((offset++), 0), "NO CONSTRUCTED TEST INPUT FOUND\n");
+							edit.insert(new vscode.Position((offset++), 0), LINES);
+							edit.insert(new vscode.Position((offset++), 0),"\n");
+							return;
+						}
 						edit.insert(new vscode.Position(0, 0), MIKAHEADER);
 						for(let i=0;i<outer_keys.length;i++)
 						{
